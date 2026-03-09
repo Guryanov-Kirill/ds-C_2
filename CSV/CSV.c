@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 
-int findMaxLenWord(char array[100][100], int currentSize) {
+int findMaxLenWord(char array[100][100], int currentSize)
+{
     int maxLen = 0;
     for (int i = 0; i < currentSize; i++) {
         int currentLen = 0;
@@ -15,7 +16,8 @@ int findMaxLenWord(char array[100][100], int currentSize) {
     return maxLen;
 }
 
-int isNumber(char* s) {
+int isNumber(char* s)
+{
     if (*s == '\0') {
         return 0;
     }
@@ -27,7 +29,8 @@ int isNumber(char* s) {
     return 1;
 }
 
-void printLine(FILE* out, int w1, int w2, char symbol) {
+void printLine(FILE* out, int w1, int w2, char symbol)
+{
     fprintf(out, "+");
     for (int i = 0; i < w1 + 2; i++) {
         fprintf(out, "%c", symbol);
@@ -39,7 +42,8 @@ void printLine(FILE* out, int w1, int w2, char symbol) {
     fprintf(out, "+\n");
 }
 
-int main() {
+int main()
+{
     FILE* fileIn = fopen("input.csv", "r");
     FILE* fileOut = fopen("output.txt", "w");
 
@@ -99,4 +103,3 @@ int main() {
     fclose(fileOut);
     return 0;
 }
-
