@@ -107,6 +107,38 @@ bool testAvlDeleteTwoChildren(void)
     return res;
 }
 
+bool testAvlSaveFile(void)
+{
+    AVL* avl = newAvl();
+    avl->root = insert(avl->root, "SVO", "Sheremetyevo");
+    avl->root = insert(avl->root, "DME", "Domodedovo");
+    avl->root = insert(avl->root, "VKO", "Vnukovo");
+
+    FILE* f = fopen("test.txt", "w");
+    if (f == NULL) {
+        deleteAvl(avl);
+        return false;
+    }
+    saveFile(avl->root, f);
+    fclose(f);
+
+    f = fopen("test.txt", "r");
+    char buffer[128];
+    bool res = true;
+
+    if (fgets(buffer, sizeof(buffer), f) == NULL || strcmp(buffer, "DME:Domodedovo\n") != 0)
+        res = false;
+    if (res && (fgets(buffer, sizeof(buffer), f) == NULL || strcmp(buffer, "SVO:Sheremetyevo\n") != 0))
+        res = false;
+    if (res && (fgets(buffer, sizeof(buffer), f) == NULL || strcmp(buffer, "VKO:Vnukovo\n") != 0))
+        res = false;
+
+    fclose(f);
+    remove("test.txt");
+    deleteAvl(avl);
+    return res;
+}
+
 int main(int argc, char** argv)
 {
     bool testMode = false;
@@ -128,6 +160,7 @@ int main(int argc, char** argv)
             &testAvlFind,
             &testAvlDeleteLeaf,
             &testAvlDeleteTwoChildren,
+            &testAvlSaveFile
         };
 
         for (int testNum = 0; testNum < TEST_NUM; ++testNum) {
