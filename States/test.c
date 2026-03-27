@@ -1,9 +1,9 @@
 #include "graph.h"
+#include "queue.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "queue.h"
 
 #define GREEN(string) "\x1b[32m" string "\x1b[0m"
 #define RED(string) "\x1b[31m" string "\x1b[0m"
