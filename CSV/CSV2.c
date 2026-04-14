@@ -1,20 +1,24 @@
 #include <stdio.h>
 #include <string.h>
 
-void findMaxElement(int maxArray[300], char array[300][300][100], int rows, int cols)
+typedef struct {
+    char matrix[300][300][100];
+    int colMaxElement[300];
+    int rowCount;
+    int colCount;
+} CSVTable;
+
+void findMaxElement(CSVTable* t)
 {
-    for (int j = 0; j <= cols; j++) {
+    for (int j = 0; j <= t->colCount; j++) {
         int maxLen = 0;
-        for (int i = 0; i < rows; i++) {
-            int current = 0;
-            while (array[i][j][current] != '\0') {
-                current++;
-            }
+        for (int i = 0; i < t->rowCount; i++) {
+            int current = strlen(t->matrix[i][j]);
             if (current > maxLen) {
                 maxLen = current;
             }
-            maxArray[j] = maxLen;
         }
+        t->colMaxElement[j] = maxLen;
     }
 }
 
@@ -31,11 +35,11 @@ int isNumber(char* s)
     return 1;
 }
 
-void printLine(FILE* out, int maxElement[300], int cols, char symbol)
+void printLine(FILE* out, CSVTable* t, char symbol)
 {
-    for (int j = 0; j <= cols; j++) {
+    for (int j = 0; j <= t->colCount; j++) {
         fprintf(out, "+");
-        for (int k = 0; k < maxElement[j] + 2; k++) {
+        for (int k = 0; k < t->colMaxElement[j] + 2; k++) {
             fprintf(out, "%c", symbol);
         }
     }
@@ -51,56 +55,53 @@ int main()
         return 1;
     }
 
+    static CSVTable t = { 0 };
     char buffer[300];
-    static char matrix[300][300][100];
-    int row = 0;
-    int maxColumn = 0;
     while (fgets(buffer, 300, fileIn) != NULL) {
         int i = 0;
         int column = 0;
         int number = 0;
-        while ((buffer[i] != '\n') && (buffer[i] != '\r')) {
+        while ((buffer[i] != '\n') && (buffer[i] != '\r') && (buffer[i] != '\0')) {
             if (buffer[i] != ',') {
-                matrix[row][column][number] = buffer[i];
+                t.matrix[t.rowCount][column][number] = buffer[i];
                 number++;
             } else {
-                matrix[row][column][number] = '\0';
+                t.matrix[t.rowCount][column][number] = '\0';
                 column++;
                 number = 0;
             }
             i++;
         }
-        matrix[row][column][number] = '\0';
-        if (column > maxColumn) {
-            maxColumn = column;
+        t.matrix[t.rowCount][column][number] = '\0';
+        if (column > t.colCount) {
+            t.colCount = column;
         }
-        row++;
+        t.rowCount++;
     }
 
-    int maxElement[300];
-    findMaxElement(maxElement, matrix, row, maxColumn);
+    findMaxElement(&t);
 
-    for (int i = 0; i < row; i++) {
+    for (int i = 0; i < t.rowCount; i++) {
         if (i <= 1) {
-            printLine(fileOut, maxElement, maxColumn, '=');
+            printLine(fileOut, &t, '=');
         } else {
-            printLine(fileOut, maxElement, maxColumn, '-');
+            printLine(fileOut, &t, '-');
         }
-        for (int j = 0; j <= maxColumn; j++) {
+        for (int j = 0; j <= t.colCount; j++) {
             if (i == 0) {
-                fprintf(fileOut, "| %-*s ", maxElement[j], matrix[i][j]);
+                fprintf(fileOut, "| %-*s ", t.colMaxElement[j], t.matrix[i][j]);
             } else {
-                if (isNumber(matrix[i][j])) {
-                    fprintf(fileOut, "| %*s ", maxElement[j], matrix[i][j]);
+                if (isNumber(t.matrix[i][j])) {
+                    fprintf(fileOut, "| %*s ", t.colMaxElement[j], t.matrix[i][j]);
                 } else {
-                    fprintf(fileOut, "| %-*s ", maxElement[j], matrix[i][j]);
+                    fprintf(fileOut, "| %-*s ", t.colMaxElement[j], t.matrix[i][j]);
                 }
             }
         }
         fprintf(fileOut, "|");
         fprintf(fileOut, "\n");
     }
-    printLine(fileOut, maxElement, maxColumn, '-');
+    printLine(fileOut, &t, '-');
     fclose(fileIn);
     fclose(fileOut);
     return 0;
