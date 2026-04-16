@@ -121,13 +121,13 @@ Node* createNode(char* key, const char* name)
         printf("Allocation error\n");
         return NULL;
     }
-    strncpy(node->key, key, 9);
-    strncpy(node->name, name, 299);
+    node->key = strdup(key);
+    node->name = strdup(name);
     node->balance = 0;
     return node;
 }
 
-Node* insert(Node* node, char key[10], char name[300])
+Node* insert(Node* node, char* key, char* name)
 {
     if (node == NULL) {
         return createNode(key, name);
@@ -211,6 +211,8 @@ void freeTree(Node* node)
     }
     freeTree(node->leftChild);
     freeTree(node->rightChild);
+    free(node->key);
+    free(node->name);
     free(node);
 }
 
