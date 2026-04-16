@@ -8,3 +8,7 @@ add_library(avl_tree AVLTree.c)
 
 add_executable(tests testAVLTree.c)
 target_link_libraries(tests PRIVATE avl_tree)
+
+add_executable(aerosoft_app main.c)
+target_link_libraries(aerosoft_app PRIVATE avl_tree)
+
