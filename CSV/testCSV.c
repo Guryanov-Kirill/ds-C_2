@@ -1,20 +1,23 @@
 #include "CSV2.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
 
 #define GREEN(string) "\x1b[32m" string "\x1b[0m"
 #define RED(string) "\x1b[31m" string "\x1b[0m"
 
-bool testTableInit(void) {
+bool testTableInit(void)
+{
     CSVTable t;
-    if (initTable(&t) == 0) return false;
+    if (initTable(&t) == 0)
+        return false;
     bool res = (t.rowCount == 0 && t.matrix != NULL);
     freeTable(&t);
     return res;
 }
 
-bool testParseRow(void) {
+bool testParseRow(void)
+{
     CSVTable t;
     initTable(&t);
     char buffer[] = "A,B,C\n";
@@ -30,7 +33,8 @@ bool testParseRow(void) {
     return res;
 }
 
-bool testRowExpansion(void) {
+bool testRowExpansion(void)
+{
     CSVTable t;
     initTable(&t);
     t.rowCapacity = 1;
@@ -44,7 +48,8 @@ bool testRowExpansion(void) {
     return res;
 }
 
-bool testColExpansion(void) {
+bool testColExpansion(void)
+{
     CSVTable t;
     initTable(&t);
     t.colCapacity = 1;
@@ -57,7 +62,8 @@ bool testColExpansion(void) {
     return res;
 }
 
-bool testMaxElement(void) {
+bool testMaxElement(void)
+{
     CSVTable t;
     initTable(&t);
     parseRow(&t, "Word,LongerWord\n");
@@ -67,11 +73,13 @@ bool testMaxElement(void) {
     return res;
 }
 
-bool testIsNumber(void) {
+bool testIsNumber(void)
+{
     return (isNumber("123") == 1 && isNumber("abc") == 0 && isNumber("45.6") == 1);
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv)
+{
     bool testMode = false;
     for (int i = 0; i < argc; ++i) {
         if (strcmp(argv[i], "--test") == 0) {
